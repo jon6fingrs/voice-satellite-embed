@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice satellite on a plain page</title>
+<style>body{font-family:system-ui,sans-serif;background:#111;color:#eee;padding:2rem}</style>
+</head>
+<body>
+<h1>Kitchen tablet</h1>
+<p>Say the wake word. The integration's own overlay shows up over this page.</p>
+<script type="module">
+import { startVoiceSatellite } from './voice-satellite-embed.js';
+
+/* Keep the token out of the file: open the page once as example.html#token=<long-lived token>;
+   it's saved in this browser and removed from the address bar. */
+const m = /token=([^&]+)/.exec(location.hash);
+if (m) { localStorage.setItem('ha_token', decodeURIComponent(m[1])); history.replaceState(null, '', location.pathname); }
+const token = localStorage.getItem('ha_token');
+
+const sat = await startVoiceSatellite({
+  token,
+  entity: 'assist_satellite.kitchen_tablet',   // this device's Voice Satellite entity
+  // hassUrl: 'https://homeassistant.example.com',  // only if the page isn't served by Home Assistant
+});
+window.voiceSatellite = sat;   // e.g. sat.busy(), sat.hold(true) during a video call
+</script>
+</body>
+</html>
